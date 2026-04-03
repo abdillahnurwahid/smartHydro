@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartHydro — Educational IoT Drone Kit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --maroon-deep: #4a0a0a;
+    --maroon: #7b1a1a;
+    --maroon-mid: #921f1f;
+    --maroon-bright: #b22222;
+    --white: #ffffff;
+    --off-white: #fdf8f8;
+    --cream: #f5eeee;
+    --text-dark: #1a0505;
+    --text-muted: #6b3333;
+    --border: rgba(122, 26, 26, 0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 6%;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--maroon);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo span {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--maroon-bright);
+    border-radius: 50%;
+    margin-left: 3px;
+    vertical-align: middle;
+    position: relative; top: -2px;
+  }
+
+  .nav-cta {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    text-decoration: none;
+    padding: 0.5rem 1.25rem;
+    border: 1.5px solid var(--maroon);
+    border-radius: 2px;
+    transition: all 0.25s ease;
+  }
+
+  .nav-cta:hover {
+    background: var(--maroon);
+    color: white;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: var(--off-white);
+    padding: 8rem 6% 5rem;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 50%, rgba(178,34,34,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(74,10,10,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Decorative grid lines */
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(122,26,26,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(122,26,26,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1200px; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--maroon);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 2px;
+    margin-bottom: 1.75rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.4); }
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+    line-height: 1.1;
+    color: var(--text-dark);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--maroon);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    font-weight: 400;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon-bright) 100%);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 1rem 2.25rem;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 24px rgba(122,26,26,0.35);
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(122,26,26,0.45);
+  }
+
+  .btn-primary:hover::after { opacity: 1; }
+
+  .hero-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  /* HERO VISUAL */
+  .hero-visual {
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .drone-illustration {
+    width: 100%; max-width: 460px;
+    position: relative;
+  }
+
+  .drone-svg {
+    width: 100%;
+    filter: drop-shadow(0 20px 60px rgba(122,26,26,0.2));
+  }
+
+  /* Data readout cards */
+  .data-cards {
+    position: absolute;
+    display: flex; flex-direction: column; gap: 0.6rem;
+    right: -10px; top: 50%; transform: translateY(-50%);
+    animation: slideIn 0.8s 0.5s ease both;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-50%) translateX(20px); }
+    to { opacity: 1; transform: translateY(-50%) translateX(0); }
+  }
+
+  .data-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--maroon);
+    border-radius: 4px;
+    padding: 0.5rem 0.85rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    min-width: 130px;
+  }
+
+  .data-card-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    margin-bottom: 0.2rem;
+  }
+
+  .data-card-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    font-family: 'DM Serif Display', serif;
+  }
+
+  .data-card-value small {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    background: var(--maroon-deep);
+    padding: 1.75rem 6%;
+  }
+
+  .stats-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; gap: 0; justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .stat-item {
+    text-align: center;
+    flex: 1;
+    padding: 0 1rem;
+    border-right: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: white;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-top: 0.3rem;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 6%;
+  }
+
+  .section-inner {
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    margin-bottom: 1rem;
+    position: relative;
+    padding-left: 1.25rem;
+  }
+
+  .section-tag::before {
+    content: '';
+    position: absolute; left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 2px;
+    background: var(--maroon);
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    color: var(--text-dark);
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+
+  h2 em {
+    font-style: italic;
+    color: var(--maroon);
+  }
+
+  .section-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin-bottom: 3.5rem;
+  }
+
+  /* SENSOR GRID */
+  .sensors-section {
+    background: var(--cream);
+  }
+
+  .sensors-header {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end;
+    margin-bottom: 3.5rem;
+  }
+
+  .sensor-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px;
+    background: var(--border);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .sensor-card {
+    background: white;
+    padding: 2.25rem 1.75rem;
+    position: relative;
+    transition: background 0.3s ease;
+    cursor: default;
+  }
+
+  .sensor-card:hover {
+    background: var(--off-white);
+  }
+
+  .sensor-icon {
+    width: 52px; height: 52px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.75rem;
+    position: relative;
+  }
+
+  .sensor-card:nth-child(1) .sensor-icon { background: rgba(178,34,34,0.08); }
+  .sensor-card:nth-child(2) .sensor-icon { background: rgba(74,10,10,0.06); }
+  .sensor-card:nth-child(3) .sensor-icon { background: rgba(146,31,31,0.07); }
+
+  .sensor-icon svg { width: 26px; height: 26px; }
+
+  .sensor-number {
+    position: absolute; top: 1.5rem; right: 1.75rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem;
+    color: rgba(122,26,26,0.06);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+  }
+
+  .sensor-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+
+  .sensor-type {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    margin-bottom: 0.85rem;
+  }
+
+  .sensor-desc {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .sensor-spec {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .sensor-spec-dot {
+    width: 6px; height: 6px;
+    background: var(--maroon);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .sensor-spec span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--maroon);
+    letter-spacing: 0.04em;
+  }
+
+  /* ESP32 VISUAL */
+  .esp-section {
+    background: white;
+  }
+
+  .esp-layout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+  }
+
+  .esp-visual {
+    position: relative;
+  }
+
+  .esp-board {
+    background: var(--maroon-deep);
+    border-radius: 8px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .esp-board::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(255,255,255,0.04) 20px),
+      repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(255,255,255,0.04) 20px);
+  }
+
+  .esp-chip {
+    position: relative; z-index: 2;
+    background: linear-gradient(135deg, #2a0505, #3d0808);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .chip-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .chip-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: white;
+    letter-spacing: -0.01em;
+  }
+
+  .chip-pins {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+
+  .chip-pin {
+    width: 20px; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+  }
+
+  .chip-pin:nth-child(2) { width: 14px; }
+  .chip-pin:nth-child(3) { width: 18px; }
+
+  .esp-connections {
+    position: relative; z-index: 2;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+
+  .conn-tag {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 2px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .conn-tag.active {
+    background: rgba(178,34,34,0.4);
+    border-color: rgba(178,34,34,0.5);
+    color: rgba(255,200,200,0.9);
+  }
+
+  .esp-pins-row {
+    position: relative; z-index: 2;
+    display: flex; gap: 3px; margin-top: 1rem;
+  }
+
+  .pin-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .pin-dot.active {
+    background: rgba(178,34,34,0.5);
+    border-color: rgba(255,100,100,0.4);
+    box-shadow: 0 0 6px rgba(178,34,34,0.6);
+  }
+
+  /* EDUCATION FEATURES */
+  .edu-features {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--border);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+
+  .edu-feat {
+    background: white;
+    padding: 1.75rem;
+    display: flex; gap: 1rem; align-items: flex-start;
+    transition: background 0.3s;
+  }
+
+  .edu-feat:hover { background: var(--off-white); }
+
+  .feat-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: rgba(122,26,26,0.07);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .feat-icon svg { width: 20px; height: 20px; color: var(--maroon); }
+
+  .feat-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+  }
+
+  .feat-desc {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* TARGET AUDIENCE */
+  .audience-section {
+    background: var(--cream);
+  }
+
+  .audience-layout {
+    display: grid; grid-template-columns: 1fr 2fr; gap: 5rem; align-items: start;
+  }
+
+  .audience-list {
+    display: flex; flex-direction: column; gap: 1px;
+    background: var(--border);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .audience-item {
+    background: white;
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    transition: background 0.3s;
+  }
+
+  .audience-item:hover { background: var(--off-white); }
+
+  .audience-idx {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: rgba(122,26,26,0.2);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 28px;
+  }
+
+  .audience-info strong {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.2rem;
+  }
+
+  .audience-info span {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* PROCESS STEPS */
+  .steps-layout {
+    display: flex; flex-direction: column; gap: 1.25rem;
+  }
+
+  .step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding: 1.5rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .step:hover {
+    border-color: var(--maroon);
+    box-shadow: 0 4px 20px rgba(122,26,26,0.08);
+  }
+
+  .step-num {
+    width: 36px; height: 36px; flex-shrink: 0;
+    border: 1.5px solid var(--maroon);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: var(--maroon);
+  }
+
+  .step-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.3rem;
+  }
+
+  .step-desc {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 50%, var(--maroon-bright) 100%);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 7rem 6%;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .cta-section::after {
+    content: 'SmartHydro';
+    position: absolute;
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(6rem, 15vw, 14rem);
+    color: rgba(255,255,255,0.04);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: -0.04em;
+  }
+
+  .cta-inner {
+    position: relative; z-index: 2;
+    max-width: 700px; margin: 0 auto;
+  }
+
+  .cta-section h2 {
+    color: white;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+  }
+
+  .cta-section h2 em {
+    color: rgba(255,200,200,0.9);
+  }
+
+  .cta-desc {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 2.5rem;
+  }
+
+  .btn-cta-main {
+    display: inline-block;
+    background: white;
+    color: var(--maroon);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 1.1rem 2.75rem;
+    border-radius: 3px;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+
+  .btn-cta-main:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 44px rgba(0,0,0,0.3);
+    background: var(--off-white);
+  }
+
+  .cta-note {
+    margin-top: 1.25rem;
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.04em;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--text-dark);
+    padding: 2.25rem 6%;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: white;
+    opacity: 0.8;
+  }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-visual { order: -1; }
+    .data-cards { right: 0; }
+    .sensors-header { grid-template-columns: 1fr; gap: 1rem; }
+    .sensor-grid { grid-template-columns: 1fr; }
+    .esp-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .audience-layout { grid-template-columns: 1fr; gap: 2rem; }
+    .edu-features { grid-template-columns: 1fr; }
+    .stats-inner { gap: 1rem; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 0.75rem 0; }
+    .stat-item:last-child { border-bottom: none; }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 4%; }
+    .hero, section { padding-left: 4%; padding-right: 4%; }
+    .stats-bar { padding-left: 4%; padding-right: 4%; }
+    h1 { font-size: 2rem; }
+    .data-cards { position: static; transform: none; margin-top: 1.5rem; flex-direction: row; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SmartHydro<span></span></div>
+  <a href="https://smarthydro.myscalev.com/p/smarthydro-sistem-monitoring-kualitas-air-berbasis-drone-iot" class="nav-cta" target="_blank">Pesan Sekarang</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge">ESP32 · IoT Educational Kit</div>
+      <h1>Kuasai IoT dengan Drone <em>Semi-Underwater</em> SmartHydro</h1>
+      <p class="hero-sub">Kit edukasi lengkap berbasis ESP32 untuk monitoring pH, Kekeruhan, dan Suhu air secara real-time. Belajar IoT dengan cara yang benar — langsung dari hardware.</p>
+      <div class="hero-actions">
+        <a href="https://smarthydro.myscalev.com/p/smarthydro-sistem-monitoring-kualitas-air-berbasis-drone-iot" class="btn-primary" target="_blank">Pesan Kit Sekarang →</a>
+        <span class="hero-meta">📦 Pengiriman ke seluruh Indonesia</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="drone-illustration">
+        <!-- SVG Drone Illustration -->
+        <svg class="drone-svg" viewBox="0 0 440 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Water surface -->
+          <ellipse cx="220" cy="260" rx="190" ry="22" fill="rgba(122,26,26,0.06)"/>
+          <path d="M30 258 Q100 244 170 258 Q220 268 270 258 Q340 244 410 258" stroke="rgba(122,26,26,0.2)" stroke-width="1.5" fill="none"/>
+          <path d="M50 268 Q120 256 190 268 Q230 276 280 268 Q350 256 400 268" stroke="rgba(122,26,26,0.12)" stroke-width="1" fill="none"/>
+
+          <!-- Underwater body -->
+          <rect x="165" y="200" width="110" height="50" rx="8" fill="rgba(74,10,10,0.85)"/>
+          <rect x="175" y="210" width="90" height="10" rx="2" fill="rgba(255,255,255,0.05)"/>
+          <circle cx="195" cy="235" r="8" fill="rgba(178,34,34,0.5)" stroke="rgba(255,100,100,0.3)" stroke-width="1"/>
+          <circle cx="220" cy="235" r="8" fill="rgba(122,26,26,0.5)" stroke="rgba(200,50,50,0.3)" stroke-width="1"/>
+          <circle cx="245" cy="235" r="8" fill="rgba(146,31,31,0.5)" stroke="rgba(178,34,34,0.3)" stroke-width="1"/>
+          <!-- Sensor labels -->
+          <text x="195" y="238" text-anchor="middle" font-size="5" fill="rgba(255,200,200,0.8)" font-family="DM Sans,sans-serif" font-weight="700">pH</text>
+          <text x="220" y="238" text-anchor="middle" font-size="4" fill="rgba(255,200,200,0.8)" font-family="DM Sans,sans-serif" font-weight="700">TRB</text>
+          <text x="245" y="238" text-anchor="middle" font-size="4" fill="rgba(255,200,200,0.8)" font-family="DM Sans,sans-serif" font-weight="700">TMP</text>
+
+          <!-- Drone arms -->
+          <line x1="220" y1="180" x2="130" y2="155" stroke="#7b1a1a" stroke-width="3" stroke-linecap="round"/>
+          <line x1="220" y1="180" x2="310" y2="155" stroke="#7b1a1a" stroke-width="3" stroke-linecap="round"/>
+          <line x1="220" y1="180" x2="140" y2="200" stroke="#7b1a1a" stroke-width="3" stroke-linecap="round"/>
+          <line x1="220" y1="180" x2="300" y2="200" stroke="#7b1a1a" stroke-width="3" stroke-linecap="round"/>
+
+          <!-- Motor hubs -->
+          <circle cx="122" cy="152" r="14" fill="#7b1a1a"/>
+          <circle cx="122" cy="152" r="9" fill="#921f1f"/>
+          <circle cx="318" cy="152" r="14" fill="#7b1a1a"/>
+          <circle cx="318" cy="152" r="9" fill="#921f1f"/>
+          <circle cx="133" cy="205" r="14" fill="#7b1a1a"/>
+          <circle cx="133" cy="205" r="9" fill="#921f1f"/>
+          <circle cx="307" cy="205" r="14" fill="#7b1a1a"/>
+          <circle cx="307" cy="205" r="9" fill="#921f1f"/>
+
+          <!-- Propellers -->
+          <ellipse cx="122" cy="152" rx="32" ry="5" fill="rgba(122,26,26,0.25)" transform="rotate(-15 122 152)"/>
+          <ellipse cx="318" cy="152" rx="32" ry="5" fill="rgba(122,26,26,0.25)" transform="rotate(15 318 152)"/>
+          <ellipse cx="133" cy="205" rx="32" ry="5" fill="rgba(122,26,26,0.25)" transform="rotate(15 133 205)"/>
+          <ellipse cx="307" cy="205" rx="32" ry="5" fill="rgba(122,26,26,0.25)" transform="rotate(-15 307 205)"/>
+
+          <!-- Main body -->
+          <rect x="185" y="160" width="70" height="45" rx="8" fill="#4a0a0a"/>
+          <rect x="190" y="165" width="60" height="8" rx="2" fill="rgba(255,255,255,0.08)"/>
+          <!-- ESP32 chip indicator -->
+          <rect x="196" y="178" width="48" height="22" rx="3" fill="#3d0808" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+          <text x="220" y="193" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)" font-family="DM Sans,sans-serif" font-weight="700" letter-spacing="0.5">ESP32</text>
+
+          <!-- WiFi signal -->
+          <path d="M220 138 Q235 128 250 138" stroke="rgba(178,34,34,0.5)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M220 130 Q240 116 260 130" stroke="rgba(178,34,34,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M220 122 Q245 104 270 122" stroke="rgba(178,34,34,0.2)" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <circle cx="220" cy="143" r="3" fill="#b22222"/>
+
+          <!-- Bubbles underwater -->
+          <circle cx="185" cy="270" r="3" fill="rgba(122,26,26,0.1)" stroke="rgba(122,26,26,0.2)" stroke-width="1"/>
+          <circle cx="255" cy="280" r="2" fill="rgba(122,26,26,0.08)" stroke="rgba(122,26,26,0.15)" stroke-width="1"/>
+          <circle cx="200" cy="290" r="4" fill="rgba(122,26,26,0.06)" stroke="rgba(122,26,26,0.12)" stroke-width="1"/>
+          <circle cx="240" cy="275" r="2.5" fill="rgba(122,26,26,0.07)" stroke="rgba(122,26,26,0.13)" stroke-width="1"/>
+        </svg>
+
+        <!-- Live Data Cards -->
+        <div class="data-cards">
+          <div class="data-card">
+            <div class="data-card-label">pH Level</div>
+            <div class="data-card-value">7.4 <small>Optimal</small></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-label">Turbidity</div>
+            <div class="data-card-value">2.1 <small>NTU</small></div>
+          </div>
+          <div class="data-card">
+            <div class="data-card-label">Suhu Air</div>
+            <div class="data-card-value">28.5 <small>°C</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Sensor Presisi</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">ESP32</div>
+      <div class="stat-label">Chip Utama</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">Real-time</div>
+      <div class="stat-label">Monitoring Data</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">IoT</div>
+      <div class="stat-label">Berbasis Praktik</div>
+    </div>
+  </div>
+</div>
+
+<!-- SENSOR SECTION -->
+<section class="sensors-section">
+  <div class="section-inner">
+    <div class="sensors-header">
+      <div>
+        <div class="section-tag">3 Sensor Presisi</div>
+        <h2>Teknologi Sensor yang <em>Akurat</em></h2>
+      </div>
+      <p class="section-lead">Setiap sensor dirancang untuk memberikan data berkualitas tinggi, memungkinkan analisis kondisi air yang komprehensif dan real-time.</p>
+    </div>
+
+    <div class="sensor-grid reveal">
+      <!-- pH Sensor -->
+      <div class="sensor-card">
+        <div class="sensor-number">01</div>
+        <div class="sensor-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7b1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M9 12h3l2-4"/>
+            <path d="M12 12l2 4"/>
+          </svg>
+        </div>
+        <div class="sensor-type">Sensor pH</div>
+        <div class="sensor-name">Keasaman Air</div>
+        <p class="sensor-desc">Akurasi tinggi untuk mengukur tingkat keasaman dan kebasaan air secara presisi. Ideal untuk monitoring kualitas air minum, pertanian, dan perikanan.</p>
+        <div class="sensor-spec">
+          <div class="sensor-spec-dot"></div>
+          <span>Range: pH 0–14 · Akurasi ±0.1</span>
+        </div>
+      </div>
+
+      <!-- Turbidity -->
+      <div class="sensor-card">
+        <div class="sensor-number">02</div>
+        <div class="sensor-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7b1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/>
+            <path d="M12 8v8M8 12h4"/>
+            <circle cx="18" cy="6" r="3"/>
+          </svg>
+        </div>
+        <div class="sensor-type">Sensor Turbidity</div>
+        <div class="sensor-name">Kekeruhan Air</div>
+        <p class="sensor-desc">Mendeteksi tingkat kekeruhan air menggunakan teknologi optik inframerah. Mengukur konsentrasi partikel tersuspensi dalam cairan dengan presisi tinggi.</p>
+        <div class="sensor-spec">
+          <div class="sensor-spec-dot"></div>
+          <span>Range: 0–3000 NTU · Optik Infrared</span>
+        </div>
+      </div>
+
+      <!-- Suhu -->
+      <div class="sensor-card">
+        <div class="sensor-number">03</div>
+        <div class="sensor-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7b1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+          </svg>
+        </div>
+        <div class="sensor-type">Sensor Suhu</div>
+        <div class="sensor-name">Temperatur Air</div>
+        <p class="sensor-desc">Monitoring fluktuasi suhu air secara krusial dan kontinu. Data suhu yang akurat sangat penting untuk analisis ekosistem perairan dan proses industri.</p>
+        <div class="sensor-spec">
+          <div class="sensor-spec-dot"></div>
+          <span>Range: -55°C–125°C · DS18B20</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ESP32 + EDUCATION -->
+<section class="esp-section">
+  <div class="section-inner">
+    <div class="esp-layout">
+      <!-- ESP32 Visual -->
+      <div class="esp-visual reveal">
+        <div class="esp-board">
+          <div class="esp-chip">
+            <div>
+              <div class="chip-label">Mikrokontroler</div>
+              <div class="chip-name">ESP32</div>
+            </div>
+            <div class="chip-pins">
+              <div class="chip-pin"></div>
+              <div class="chip-pin"></div>
+              <div class="chip-pin"></div>
+            </div>
+          </div>
+          <div class="esp-connections">
+            <span class="conn-tag active">WiFi 2.4GHz</span>
+            <span class="conn-tag active">Bluetooth</span>
+            <span class="conn-tag">GPIO ×30</span>
+            <span class="conn-tag active">ADC ×12</span>
+            <span class="conn-tag">I2C · SPI · UART</span>
+            <span class="conn-tag active">240MHz Dual Core</span>
+          </div>
+          <div class="esp-pins-row">
+            <div class="pin-dot active"></div>
+            <div class="pin-dot active"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot active"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot active"></div>
+            <div class="pin-dot active"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot active"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot active"></div>
+            <div class="pin-dot active"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="reveal">
+        <div class="section-tag">Platform Belajar</div>
+        <h2>Dirancang untuk <em>Praktik Nyata</em></h2>
+        <p class="section-lead">SmartHydro bukan sekadar kit — ini adalah ekosistem belajar IoT yang komprehensif, dari hardware hingga kode program.</p>
+
+        <div class="edu-features">
+          <div class="edu-feat">
+            <div class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <polyline points="16 18 22 12 16 6"/>
+                <polyline points="8 6 2 12 8 18"/>
+              </svg>
+            </div>
+            <div>
+              <div class="feat-title">Ready to Code</div>
+              <div class="feat-desc">Hardware sudah terkonfigurasi. Langsung bisa coding dengan Arduino IDE, MicroPython, atau platform lainnya.</div>
+            </div>
+          </div>
+          <div class="edu-feat">
+            <div class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
+            <div>
+              <div class="feat-title">Dokumentasi Lengkap</div>
+              <div class="feat-desc">Dilengkapi panduan wiring, contoh kode, dan tutorial step-by-step yang mudah dipahami pemula.</div>
+            </div>
+          </div>
+          <div class="edu-feat">
+            <div class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div>
+              <div class="feat-title">Komunitas Aktif</div>
+              <div class="feat-desc">Bergabung dengan komunitas maker dan pelajar IoT Indonesia yang terus berkembang.</div>
+            </div>
+          </div>
+          <div class="edu-feat">
+            <div class="feat-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+            </div>
+            <div>
+              <div class="feat-title">Proyek Berbasis Praktik</div>
+              <div class="feat-desc">Pelajari IoT melalui project nyata: monitoring kualitas air, data logging, dan visualisasi data real-time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARGET AUDIENCE -->
+<section class="audience-section">
+  <div class="section-inner">
+    <div class="audience-layout">
+      <div class="reveal">
+        <div class="section-tag">Untuk Siapa?</div>
+        <h2>Cocok untuk <em>Semua Level</em></h2>
+        <p class="section-lead">Dari pemula hingga mahasiswa tingkat lanjut, SmartHydro dirancang agar semua orang bisa belajar IoT dengan percaya diri.</p>
+
+        <div class="audience-list">
+          <div class="audience-item">
+            <div class="audience-idx">01</div>
+            <div class="audience-info">
+              <strong>Mahasiswa Teknik & Informatika</strong>
+              <span>Proyek tugas akhir, penelitian, dan pengembangan skill IoT</span>
+            </div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-idx">02</div>
+            <div class="audience-info">
+              <strong>Pelajar SMK Elektronika & Komputer</strong>
+              <span>Praktik langsung sesuai kurikulum IoT dan embedded systems</span>
+            </div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-idx">03</div>
+            <div class="audience-info">
+              <strong>Hobbyist & Maker</strong>
+              <span>Eksplorasi teknologi drone bawah air dan sensor monitoring</span>
+            </div>
+          </div>
+          <div class="audience-item">
+            <div class="audience-idx">04</div>
+            <div class="audience-info">
+              <strong>Peneliti & Developer</strong>
+              <span>Prototipe cepat untuk monitoring kualitas air dan sistem IoT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Learning Path -->
+      <div class="reveal">
+        <div class="section-tag">Learning Path</div>
+        <h2>Mulai <em>Belajar</em> dalam 4 Langkah</h2>
+        <div class="steps-layout" style="margin-top: 2rem;">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div>
+              <div class="step-title">Unboxing & Assembly</div>
+              <div class="step-desc">Rakit komponen drone dan hubungkan sensor sesuai panduan wiring yang disediakan. Tidak butuh solder!</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div>
+              <div class="step-title">Setup Environment</div>
+              <div class="step-desc">Install Arduino IDE dan library yang dibutuhkan. Firmware example sudah tersedia dan siap di-upload.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div>
+              <div class="step-title">First Deployment</div>
+              <div class="step-desc">Celupkan drone ke air, jalankan program, dan lihat data sensor mengalir secara real-time ke Serial Monitor atau dashboard.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div>
+              <div class="step-title">Kembangkan Proyekmu</div>
+              <div class="step-desc">Tambahkan fitur: IoT cloud, notifikasi, visualisasi data, atau integrasi dengan sistem monitoring yang lebih kompleks.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="section-tag" style="color:rgba(255,200,200,0.7);">Siap Memulai?</div>
+    <h2>Pesan Kit SmartHydro <em>Sekarang</em></h2>
+    <p class="cta-desc">Dapatkan kit lengkap dengan drone frame, ESP32, 3 sensor presisi, modul WiFi, dan dokumentasi lengkap. Mulai perjalanan IoT-mu hari ini.</p>
+    <a href="https://smarthydro.myscalev.com/p/smarthydro-sistem-monitoring-kualitas-air-berbasis-drone-iot" class="btn-cta-main" target="_blank">
+      🚀 PESAN KIT SMARTHYDRO SEKARANG
+    </a>
+    <p class="cta-note">Pengiriman ke seluruh Indonesia · Garansi Produk · Support Teknis Tersedia</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SmartHydro</div>
+  <div class="footer-copy">© 2025 SmartHydro · Educational IoT Drone Kit berbasis ESP32</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+        // Stagger children
+        const children = el.target.querySelectorAll('.sensor-card, .edu-feat, .audience-item, .step');
+        children.forEach((child, i) => {
+          child.style.transitionDelay = `${i * 0.08}s`;
+          child.style.opacity = '0';
+          child.style.transform = 'translateY(16px)';
+          child.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          setTimeout(() => {
+            child.style.opacity = '1';
+            child.style.transform = 'none';
+          }, 100 + i * 80);
+        });
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Data card live animation
+  const values = [
+    { el: document.querySelectorAll('.data-card')[0], key: 'pH Level', unit: 'Optimal', base: 7.0, range: 0.6, dec: 1 },
+    { el: document.querySelectorAll('.data-card')[1], key: 'Turbidity', unit: 'NTU', base: 1.8, range: 0.8, dec: 1 },
+    { el: document.querySelectorAll('.data-card')[2], key: 'Suhu Air', unit: '°C', base: 27.5, range: 2.5, dec: 1 },
+  ];
+
+  setInterval(() => {
+    values.forEach(v => {
+      const val = (v.base + Math.random() * v.range).toFixed(v.dec);
+      const valEl = v.el.querySelector('.data-card-value');
+      valEl.innerHTML = `${val} <small>${v.unit}</small>`;
+      valEl.style.color = '#b22222';
+      setTimeout(() => { valEl.style.color = ''; }, 300);
+    });
+  }, 2500);
+</script>
+
+</body>
+</html>
