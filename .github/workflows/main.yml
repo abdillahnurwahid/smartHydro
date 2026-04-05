@@ -1,10 +1,8 @@
-
 name: Auto Deploy Subdomain
-
 on:
   push:
     branches:
-      - main  # Ganti 'master' jika branch utama kamu namanya master
+      - main
 
 jobs:
   web-deploy:
@@ -14,10 +12,17 @@ jobs:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
 
+    - name: 🔧 Rename to index.html
+      run: cp smarthydro.html index.html
+
     - name: 🚀 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: ./  # Karena sudah dikunci di folder public_html, cukup pakai ./
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          smarthydro.html
